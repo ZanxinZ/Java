@@ -1,4 +1,6 @@
-### Garbage Collection（垃圾回收算法）
+### Garbage Collection（垃圾收集）
+
+#### 1.判断一个对象是否可以被回收
 
 - **引用计数**算法
 
@@ -28,7 +30,103 @@
   类的卸载条件：
 
   - 该类所有的实例都已经被回收，此时堆中不存在该类的任何实例。
-  - 加载该类的 ClassLoader 已经被回收。
-  - 该类对应的 Class 对象没有在任何地方被引用，也就无法在任何地方通过反射访问该类方法。
+  - 加载该类的 [ClassLoader](https://zhuanlan.zhihu.com/p/51374915]) 已经被回收。
+  - 该类对应的 Class 对象没有在任何地方被引用，也就无法在任何地方通过[反射](https://www.cnblogs.com/chanshuyi/p/head_first_of_reflection.html)访问该类方法。
 
-- 
+  > **类加载器 ClassLoader**
+  >
+  > - BootstrapClassLoader（加载核心类，java.util.*、java.io.*、java.nio.*、java.lang.*）
+  > - ExtensionClassLoader（加载扩展类，如 javax中的Swing） 
+  > - AppClassLoader(面向用户，如 Main 类)。
+
+  > **反射** Reflection
+  >
+  > - 获取 Class 对象实例 
+  >
+  >   ```java
+  >   Class clz = Class.forName("com.zhenai.api.Apple");
+  >   ```
+  >
+  > - 根据 Class 对象获取 Constructor 对象
+  >
+  >   ```java
+  >   Constructor appleConstructor = clz.getConstructor();
+  >   ```
+  >
+  > - 使用 Constructor对象的 newInstance 方法获取反射类对象
+  >
+  >   ```java
+  >   Object appleObj = appleConstructor.newInstance();
+  >   ```
+  >
+  > - 调用方法
+  >
+  >   - 获取方法的 Method 对象
+  >
+  >     ```java
+  >     Method setPriceMethod = clz.getMethod("setPrice", int.class);
+  >     ```
+  >
+  >   - 使用 invoke 方法调用方法
+  >
+  >     ```java
+  >     setPriceMethod.invoke(appleObj, 14);
+  >     ```
+
+#### 2. 引用类型
+
+判断对象是否可以被回收，都与**引用**有关系
+
+new、SoftReference、WeakReference、PhantomReference；
+
+- 强引用
+
+  new 得到的
+
+  ```java
+  Object obj = new Object();
+  ```
+
+- 软引用
+
+  被软引用关联的对象只有在**内存不够的时候**才会被回收。
+
+  ```java
+  Object obj = new Object();
+  SoftReference<Object> sf = new SoftReference<Object>(obj);
+  obj = null;  // 使对象只被软引用关联
+  ```
+
+- 弱引用
+
+  被弱引用关联的对象一定会被回收，它只能存活到下一次垃圾回收发生之前。
+
+  ```java
+  Object obj = new Object();
+  WeakReference<Object> wf = new WeakReference<Object>(obj);
+  obj = null;
+  ```
+
+- 虚引用
+
+  又称为**幽灵引用**或**幻影引用**。
+
+  不会影响对象的生存时间，无法通过虚引用来访问对象。
+
+  唯一目的：**对象被回收时会收到一个系统通知**。
+
+  ```java
+  Object obj = new Object();
+  PhantomReference<Object> pf = new PhantomReference<Object>(obj, null);
+  obj = null;
+  ```
+
+#### 3. 垃圾收集算法
+
+- 标记-清除
+- 标记-整理
+- 复制
+- 分代收集
+
+#### 4. 垃圾收集器
+
