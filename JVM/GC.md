@@ -1,5 +1,7 @@
 ### Garbage Collection（垃圾收集）
 
+参考链接[CS-Note/Java](https://github.com/CyC2018/CS-Notes/blob/master/notes/Java%20%E8%99%9A%E6%8B%9F%E6%9C%BA.md#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8)
+
 #### 1.判断一个对象是否可以被回收
 
 - **引用计数**算法
